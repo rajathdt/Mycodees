@@ -1,0 +1,84 @@
+#include <SoftwareSerial.h>
+#include <TinyGPS++.h>
+
+// Define the metal detector pin
+const int metalDetectorPin = 2;
+
+// Define the GPS pins
+const int gpsTxPin = 3;
+const int gpsRxPin = 4;
+
+// Define the motor driver pins
+const int motor1Pin1 = 5;
+const int motor1Pin2 = 6;
+const int motor2Pin1 = 7;
+const int motor2Pin2 = 8;
+
+// Create a software serial object for the GPS module
+SoftwareSerial gpsSerial(gpsTxPin, gpsRxPin);
+
+// Create a TinyGPS++ object
+TinyGPSPlus gps;
+
+void setup() {
+  // Initialize the serial communication
+  Serial.begin(9600);
+
+  // Initialize the GPS serial communication
+  gpsSerial.begin(9600);
+
+  // Initialize the metal detector pin as an input
+  pinMode(metalDetectorPin, INPUT);
+
+  // Initialize the motor driver pins as outputs
+  pinMode(motor1Pin1, OUTPUT);
+  pinMode(motor1Pin2, OUTPUT);
+  pinMode(motor2Pin1, OUTPUT);
+  pinMode(motor2Pin2, OUTPUT);
+}
+
+void loop() {
+  // Read the metal detector value
+  int metalDetectorValue = digitalRead(metalDetectorPin);
+
+  // If metal is detected, stop the rover and display the GPS coordinates
+  if (metalDetectorValue == HIGH) {
+    stopRover();
+    displayGpsCoordinates();
+  } else {
+    // Move the rover forward
+    moveRoverForward();
+  }
+
+  // Delay for 100ms
+  delay(100);
+}
+
+void stopRover() {
+  // Stop the motors
+  digitalWrite(motor1Pin1, LOW);
+  digitalWrite(motor1Pin2, LOW);
+  digitalWrite(motor2Pin1, LOW);
+  digitalWrite(motor2Pin2, LOW);
+}
+
+void displayGpsCoordinates() {
+  // Read the GPS coordinates
+  while (gpsSerial.available() > 0) {
+    if (gps.encode(gpsSerial.read())) {
+      // Display the GPS coordinates
+      Serial.print("Latitude: ");
+      Serial.println(gps.location.lat(), 6);
+      Serial.print("Longitude: ");
+      Serial.println(gps.location.lng(), 6);
+    }
+  }
+}
+
+void moveRoverForward() {
+  // Move the motors forward
+  digitalWrite(motor1Pin1, HIGH);
+  digitalWrite(motor1Pin2, LOW);
+  digitalWrite(motor2Pin1, HIGH);
+  digitalWrite(motor2Pin2, LOW);
+}
