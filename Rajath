@@ -4,7 +4,7 @@
 // Define the metal detector pin
 const int metalDetectorPin = 2;
 
-// Define the GPS pins
+// Define GPS pins
 const int gpsTxPin = 3;
 const int gpsRxPin = 4;
 
@@ -30,7 +30,7 @@ void setup() {
   // Initialize the metal detector pin as an input
   pinMode(metalDetectorPin, INPUT);
 
-  // Initialize the motor driver pins as outputs
+  // Initialize the motor driver pins
   pinMode(motor1Pin1, OUTPUT);
   pinMode(motor1Pin2, OUTPUT);
   pinMode(motor2Pin1, OUTPUT);
@@ -41,7 +41,7 @@ void loop() {
   // Read the metal detector value
   int metalDetectorValue = digitalRead(metalDetectorPin);
 
-  // If metal is detected, stop the rover and display the GPS coordinates
+  // If metal is detected, 
   if (metalDetectorValue == HIGH) {
     stopRover();
     displayGpsCoordinates();
@@ -76,7 +76,7 @@ void displayGpsCoordinates() {
 }
 
 void moveRoverForward() {
-  // Move the motors forward
+  // Move the motors 
   digitalWrite(motor1Pin1, HIGH);
   digitalWrite(motor1Pin2, LOW);
   digitalWrite(motor2Pin1, HIGH);
